@@ -1,0 +1,304 @@
+\documentclass[11pt]{book}
+
+% include figures
+\usepackage{epsfig,wrapfig}
+
+% prefer PDF to PNG
+\DeclareGraphicsExtensions{%
+  .pdf, .png}
+
+%\graphicspath{}
+
+% AMS symbols
+\usepackage{amsmath,amssymb}
+
+% cancel
+\usepackage{cancel}
+
+% Palatino font (and math symbols) -- looks nicer than the standard
+% LaTeX font
+\usepackage{mathpazo}
+%\usepackage{helvet}
+
+% URLs (special font for monospace)
+%\usepackage{inconsolata}
+%\usepackage[T1]{fontenc}
+
+
+% margins and paper size -- this needs to come before fncychap
+% see http://stackoverflow.com/questions/3729099/latex-paper-size
+\usepackage[top=0.75in,
+            bottom=0.75in,
+            inner=0.9in,
+            outer=0.65in]{geometry} 
+\geometry{papersize={7in,10in}}
+
+
+% this needs to be done before the fncychap style, since that will 
+% redo the chapter stuff
+\usepackage{sectsty}
+\allsectionsfont{\sffamily}
+
+
+\usepackage[PetersLenny]{fncychap}
+\ChNameVar{\fontsize{16}{18}\usefont{OT1}{phv}{m}{n}\selectfont}
+\ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont}
+\ChTitleVar{\Huge\bfseries\sffamily}
+\ChRuleWidth{1pt}
+
+% part page style                                                                                  
+% see http://tex.stackexchange.com/questions/6609/problems-with-part-labels-using-titlesec         
+\usepackage{titlesec}
+
+\titleformat{\part}[display]
+   {\bfseries\sffamily\Huge\filcenter}
+   {{\partname{}} \thepart}
+   {0em}
+   {\hrule}
+
+
+
+
+% hyperlinks -- load after fncychap
+\usepackage{hyperref}
+\usepackage[hyperpageref]{backref}
+\renewcommand*{\backref}[1]{}% for backref < 1.33 necessary
+\renewcommand*{\backrefalt}[4]{%
+\ifcase #1 %
+  No citations.%
+\or
+  (Cited on page #2)%
+\else
+  (Cited on pages #2)%
+\fi
+}
+
+% back references
+
+
+% color package
+\usepackage{xcolor}
+\definecolor{mygray}{gray}{0.5}
+
+
+% custom hrule for title page
+\newcommand{\HRule}{\rule{\linewidth}{0.125mm}}
+
+\newcommand{\pyro}{{\sf pyro}}
+\newcommand{\git}{{\tt git}}
+
+\newcommand{\ddx}[1]{{\frac{{\partial#1}}{\partial x}}}
+
+
+
+
+% don't make the chapter/section headings uppercase.  See the fancyhdr
+% documentation (section 9)
+\usepackage{fancyhdr}
+\renewcommand{\chaptermark}[1]{%  
+\markboth{\chaptername
+\ \thechapter.\ #1}{}}
+
+\renewcommand{\sectionmark}[1]{\markright{\thesection---#1}}
+
+
+% don't put a header on blank pages, see
+% http://www.latex-community.org/forum/viewtopic.php?f=4&p=51559
+% change ``plain'' to ``empty'' to eliminate the page number
+\makeatletter
+\renewcommand*\cleardoublepage{\clearpage\if@twoside
+\ifodd\c@page\else
+\hbox{}
+\thispagestyle{empty}
+\newpage
+\if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+
+
+
+
+% skip a bit of space between paragraphs, to enhance readability
+\usepackage{parskip}
+
+
+% captions
+\usepackage{caption}
+\renewcommand{\captionfont}{\footnotesize}
+\renewcommand{\captionlabelfont}{\footnotesize}
+\setlength{\captionmargin}{3em}
+
+
+%-----------------------------------------------------------------------------
+
+% license
+\usepackage{ccicons}
+
+% computer keyboard symbol
+\usepackage{marvosym}
+
+
+% for dotted lines in the matrics/arrays
+\usepackage{arydshln}
+
+
+
+% fonts for TOC, list of figures, etc
+\renewcommand*\listfigurename{\bf\textsf{List of Figures}}
+\renewcommand*\contentsname{\bf\textsf{Table of Contents}}
+
+
+
+% short table of contents
+\usepackage{shorttoc}
+
+
+% pack more figures on a page
+\usepackage{float}
+\renewcommand\floatpagefraction{.9}
+\renewcommand\topfraction{.9}
+\renewcommand\bottomfraction{.9}
+\renewcommand\textfraction{.1}   
+
+
+% MarginPars                                                                    
+\setlength{\marginparwidth}{0.75in}
+\newcommand{\MarginPar}[1]{\marginpar{\vskip-\baselineskip\raggedright\tiny\sffamily\hrule\smallskip{\color{red}#1}\par\smallskip\hrule}}
+
+
+
+
+\usepackage[many]{tcolorbox}
+
+\newtcolorbox{mybox}[1][]{
+    width=\textwidth,
+    arc=0mm,
+%    auto outer arc,
+    boxsep=0cm,
+    toprule=1pt,
+    leftrule=0pt,
+    bottomrule=1pt,
+    rightrule=0pt,
+    colframe=black,
+    colback=white,
+    fontupper=\centering\fontsize{40pt}{40pt}\sffamily,
+    breakable,
+    nobeforeafter,
+    enhanced jigsaw,
+    opacityframe=1.0,
+    opacityback=0.7
+}
+
+
+\pdfpageattr{/Group <</S /Transparency /I true /CS /DeviceRGB>>} 
+
+
+\begin{document}
+
+
+\frontmatter
+
+\begin{titlepage}
+
+\ \\[2.5in]
+\begin{center}
+\begin{mybox}[]
+\vskip 3mm
+{\Huge Scientific Computing Cookbook} \\[-0.5em]
+{\Large part of the Open Astrophysics Bookshelf}
+\end{mybox}
+\end{center}
+
+\vfill
+
+\begin{flushright}
+\today
+\end{flushright}
+
+\end{titlepage}
+
+\pagestyle{plain}
+
+\null \vfill 
+
+\noindent \ccCopy\ 2015, the Open Astrophysics Bookshelf project \\
+\noindent document git version: \input git_info.tex $\ldots$
+
+\noindent the source for these notes are available online (via \git): 
+\url{https://github.com/Open-Astrophysics-Bookshelf/scientific_computing_cookbook}
+
+\noindent \ccbyncsa \\
+\noindent This work is licensed under the Creative Commons
+Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA
+4.0) license.
+
+
+\clearpage
+
+
+\shorttoc{Chapter Listing}{0}
+
+\clearpage
+
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+
+\clearpage
+
+\chapter*{preface}
+\chaptermark{preface}
+\addcontentsline{toc}{chapter}{preface}
+
+\input preface/preface.tex
+
+\clearpage
+
+\pagestyle{headings}
+
+\renewcommand{\chaptermark}[1]{%  
+\markboth{\chaptername
+\ \thechapter.\ #1}{}}
+
+\renewcommand{\sectionmark}[1]{\markright{\thesection---#1}}
+
+% put the git hash on the first page of each chapter -- see section
+% 7 of the fancyhdr docs to see how to override the plain
+% style
+\fancypagestyle{plain}{%
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[C]{\thepage} % except the center
+\fancyfoot[L]{\scriptsize git version: \input git_info.tex $\ldots$}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+
+
+\mainmatter
+
+\part{The UNIX Shell}
+
+% \input 
+
+
+
+\part{Python}
+
+%\input 
+
+
+
+\part{Plotting and Data Analysis}
+
+
+
+
+\part{Software Engineering Practices}
+
+
+\backmatter
+
+%\addcontentsline{toc}{chapter}{References}
+%\bibliographystyle{plain}
+%\bibliography{refs}
+
+\end{document}
