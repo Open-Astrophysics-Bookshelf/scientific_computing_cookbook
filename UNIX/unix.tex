@@ -1,3 +1,5 @@
+\section{Shell Essentials}
+
 The standard (and recommended) UNIX shell is \bash.
 
 setting variables
@@ -8,8 +10,12 @@ commandline arguments
 
 backticks
 
+return codes, shortcuts, etc.
+
+
 \section{Loops}
 
+%-----------------------------------------------------------------------------
 \subsection{\em I want to loop over a set of JPEG images and convert them to PNG format}
 
 The basic looping construct is the {\tt for} statement.  You can use this with wildcards to
@@ -37,6 +43,28 @@ sequence to batch-convert the images:
 for i in *.jpg
 do
    convert $i `basename $i .jpg`.png
+done
+\end{lstlisting}
+
+
+%-----------------------------------------------------------------------------
+\subsection{\em I want to tar some large directories and check if it was successful before deleting}
+
+Note that this is actually possible with tar itself (using {\tt --remove-files}), but this
+shows how to check the return code of any function in the shell.
+
+Consider a list of directories of the form {\tt dir\_??}.  The shell
+variable {\tt \$?}  holds the return value from the last command.  We
+can test on this before deciding whether to delete.  For {\tt tar}, a
+return value of {\tt 0} means that everything worked correctly.
+
+\begin{lstlisting}[language={bash},upquote=true]
+for d in dir_??
+do
+   tar cvf $d.tar $d
+   if [ $? -eq 0 ]; then
+      rm -rf $d
+   fi
 done
 \end{lstlisting}
 
