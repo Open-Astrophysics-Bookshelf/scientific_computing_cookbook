@@ -2,7 +2,7 @@ EPStoPDF = epstopdf
 
 ALL: SciComputing.pdf
 
-DIRS := 
+DIRS := UNIX
 
 TEXS := $(foreach dir, $(DIRS), $(wildcard $(dir)/*.tex))
 EPSS := $(foreach dir, $(DIRS), $(wildcard $(dir)/*.eps))
@@ -12,7 +12,7 @@ EPSS := $(foreach dir, $(DIRS), $(wildcard $(dir)/*.eps))
 #git_info.tex:
 
 
-SciComputing.pdf: SciComputing.tex $(TEXS) $(EPSS) #refs.bib
+SciComputing.pdf: SciComputing.tex symbols.tex $(TEXS) $(EPSS) #refs.bib
 	git rev-parse --short=12 HEAD > git_info.tex
 	pdflatex SciComputing  < /dev/null
 #	bibtex SciComputing.aux

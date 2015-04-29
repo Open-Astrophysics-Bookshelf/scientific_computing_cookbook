@@ -21,8 +21,9 @@
 %\usepackage{helvet}
 
 % URLs (special font for monospace)
-%\usepackage{inconsolata}
+\usepackage{inconsolata}
 %\usepackage[T1]{fontenc}
+
 
 
 % margins and paper size -- this needs to come before fncychap
@@ -192,6 +193,35 @@
 \pdfpageattr{/Group <</S /Transparency /I true /CS /DeviceRGB>>} 
 
 
+% special colors and definitions for framing source code listings
+\usepackage{listings}
+
+\definecolor{AntiqueWhite3}{rgb}{0.804,0.753,0.69}
+\definecolor{DarkerAntiqueWhite3}{rgb}{0.659,0.635,0.612}
+\definecolor{orange}{rgb}{1.0,0.65,0.0}
+
+\lstset{%
+  keywordstyle=\color{blue}\ttfamily,%
+  commentstyle=\itshape\color[gray]{0.5},%
+  mathescape=true,%
+  basicstyle=\small\ttfamily,%
+  %frameround=fttt,%
+  frameround=ffff,%
+  %frame=shadowbox,%
+  frame=single,%
+  rulesepcolor=\color{DarkerAntiqueWhite3},%
+  backgroundcolor=\color{AntiqueWhite3},%
+  emph={load,add_slice,save}, emphstyle=\color{blue},%
+  emph={[2]In}, emphstyle=[2]\color{yellow},%
+  emph={[3]Out}, emphstyle=[3]\color{orange},%
+  xleftmargin=1em,
+  xrightmargin=1em,
+  mathescape=false}
+
+
+
+\input symbols
+
 \begin{document}
 
 
@@ -278,11 +308,13 @@ Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA
 %-----------------------------------------------------------------------------
 \part{The UNIX Shell}
 
-\chapter{Looping}
+\chapter{Basic operations}
 
-\chapter{Finding and Replacing}
+\input UNIX/unix.tex
 
-\chapter{Scripting}
+
+\chapter{Advanced Scripting}
+
 
 \chapter{Working Remotely}
 

@@ -1,0 +1,52 @@
+The standard (and recommended) UNIX shell is \bash.
+
+setting variables
+
+referencing variables
+
+commandline arguments
+
+backticks
+
+\section{Loops}
+
+\subsection{\em I want to loop over a set of JPEG images and convert them to PNG format}
+
+The basic looping construct is the {\tt for} statement.  You can use this with wildcards to
+loop over files.  For example, this will just print ({\tt echo}) the names of the JPEG
+files in your directory:
+
+\begin{lstlisting}[language={bash},upquote=true]
+for i in *.jpg
+do
+   echo $i
+done
+\end{lstlisting}
+
+You can type that line-by-line at the command prompt, or include it in
+a text file (traditionally with the suffix `{\tt .sh}') and use the
+{\tt source} command to execute the contents of the file.
+
+To convert the images, we'll use the Imagemagick {\tt convert}
+command---this is usually installed by default on most UNIX machines.
+Another helpful command we'll use is {\tt basename}---this can extract
+the basename of the filename without the extension.  Here's the
+sequence to batch-convert the images:
+
+\begin{lstlisting}[language={bash}]
+for i in *.jpg
+do
+   convert $i `basename $i .jpg`.png
+done
+\end{lstlisting}
+
+
+
+
+
+
+
+\section{Finding and replacing}
+
+
+
