@@ -2,7 +2,7 @@ EPStoPDF = epstopdf
 
 ALL: SciComputing.pdf
 
-DIRS := UNIX reproducibility
+DIRS := UNIX remote reproducibility
 
 TEXS := $(foreach dir, $(DIRS), $(wildcard $(dir)/*.tex))
 EPSS := $(foreach dir, $(DIRS), $(wildcard $(dir)/*.eps))

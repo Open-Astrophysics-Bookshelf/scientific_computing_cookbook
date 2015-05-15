@@ -1,0 +1,32 @@
+%-----------------------------------------------------------------------------
+\section{Keeping it going...}
+
+\subsection{I want to start a job up on a remote computer and make sure it keeps running
+  even if I am disconnected}
+
+{\tt nohup} is your friend here.  If you start you job with {\tt
+  nohup}, then even if you close the terminal window, kill your {\tt
+  ssh} session, etc., it will keep running.  Note that you should redirect
+the output (including {\tt stderr})
+
+\begin{verbatim}
+nohup myjob &> out &
+\end{verbatim}
+
+For some commands, especially those run with MPI, you also want to redirect input,
+such as:
+\begin{verbatim}
+nohup mpiexec -n 4 ./myjob &> out < /dev/null &
+\end{verbatim}
+
+
+
+\subsection{I want to be able to reconnect to a job that was running in
+  a terminal that got disconnected}
+
+GNU screen is the solution---this sets up a special terminal session that
+can be detacted from your terminal (i.e., you can logout, close the window, etc.),
+and then restore the session when you log back in.  For {\tt screen},
+commands are entered by first typing {\tt \carat-a}, where ``{\tt \carat}'' is the
+control key.
+
