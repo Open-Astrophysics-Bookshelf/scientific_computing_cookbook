@@ -7,62 +7,62 @@ network.
 
 \subsection{I want to connect to a remote computer}
 
-You will use the {\tt ssh} program (``secure shell'') to connect to a remote
-computer. The most straightforward way is to run the command
+You will use the \lstinline{ssh} program (``secure shell'') to connect to a
+remote computer. The most straightforward way is to run the command
 
-\begin{verbatim}
+\begin{lstlisting}
 ssh username@address.of.remote.computer
-\end{verbatim}
+\end{lstlisting}
 
 The program will then ask for your remote password and open a shell on the
-remote computer. The address could be a hostname such as {\tt
-server.youruniversity.edu}, or it could be an IP address such as 198.192.10.1.
-You can leave out the username if the remote username is the same as the local
-username.
+remote computer. The address could be a hostname such as
+\cmd{server.youruniversity.edu}, or it could be an IP address such as
+198.192.10.1. You can leave out the username if the remote username is the same
+as the local username.
 
 \subsection{I want make it easier to connect to a remote computer that I use a
 lot}
 
-Typing the whole {\tt ssh} command with the address and username every time is
+Typing the whole \cmd{ssh} command with the address and username every time is
 tedious. There is a very simple way to expedite this.
 
-In your home directory there will be a directory called {\tt .ssh}. This
-directory may contains a file called {\tt config}, which can be used among
+In your home directory there will be a directory called \cmd{.ssh}. This
+directory may contains a file called \cmd{config}, which can be used among
 other things to set up shorter aliases to connections you use a lot. If this
 file does not exist, you can create it.
 
-Let's say your username is {\tt galileo} and you need to connect to a remote
-machine called {\tt lab.galilei.edu}. You can put the following in your
-{\tt .ssh/config} file:
+Let's say your username is \cmd{galileo} and you need to connect to a remote
+machine called \cmd{lab.galilei.edu}. You can put the following in your
+\cmd{.ssh/config} file:
 
-\begin{verbatim}
+\begin{lstlisting}
 Host lab
     HostName lab.galilei.edu
     User galileo
-\end{verbatim}
+\end{lstlisting}
 
-On the first line {\tt lab} is an alias, which you can choose yourself. With
-this setup done, typing {\tt ssh lab} is equivalent to typing {\tt ssh
+On the first line \cmd{lab} is an alias, which you can choose yourself. With
+this setup done, typing \cmd{ssh lab} is equivalent to typing \cmd{ssh
 galileo@lab.galilei.edu}.
 
 \subsection{I want to transfer a file to/from a remote computer}
 
-The command to do this is {\tt scp}, short for ``secure copy''. It works very
-much like regular {\tt cp}, except you can add an identifier for a remote
+The command to do this is \cmd{scp}, short for ``secure copy''. It works very
+much like regular \cmd{cp}, except you can add an identifier for a remote
 computer to the file paths, separated by a colon. This identifier can either be
-a full {\tt username@address} specification or an alias defined in {\tt
-.ssh/config}. With the above definitions, these two commands both copy the file
-{\tt test.txt} from the home directory on the remote computer to the working
-directory on the local:
+a full \cmd{username@address} specification or an alias defined in
+\cmd{.ssh/config}. With the above definitions, these two commands both copy the
+file \cmd{test.txt} from the home directory on the remote computer to the
+working directory on the local:
 
-\begin{verbatim}
+\begin{lstlisting}
 scp galileo@lab.galilei.edu:test.txt .
 scp lab:test.txt .
-\end{verbatim}
+\end{lstlisting}
 
 \section{SSH keys}
 
-\subsection{I want to stop {\tt ssh} asking for my password every time}
+\subsection{I want to stop \cmd{ssh} asking for my password every time}
 
 
 \section{Keeping jobs going}
@@ -70,30 +70,29 @@ scp lab:test.txt .
 \subsection{I want to start a job up on a remote computer and make sure it
 keeps running even if I am disconnected}
 
-{\tt nohup} is your friend here. If you start you job with {\tt nohup}, then
-even if you close the terminal window, kill your {\tt ssh} session, etc., it
-will keep running. Note that you should redirect the output (including {\tt
-stderr})
+\cmd{nohup} is your friend here. If you start you job with \cmd{nohup}, then
+even if you close the terminal window, kill your \cmd{ssh} session, etc., it
+will keep running. Note that you should redirect the output (including
+\cmd{stderr})
 
-\begin{verbatim}
+\begin{lstlisting}
 nohup myjob &> out &
-\end{verbatim}
+\end{lstlisting}
 
 For some commands, especially those run with MPI, you also want to redirect
 input, such as:
 
-\begin{verbatim}
+\begin{lstlisting}
 nohup mpiexec -n 4 ./myjob &> out < /dev/null &
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{I want to be able to reconnect to a job that was running in a
 terminal that got disconnected}
 
 GNU screen is the solution---this sets up a special terminal session that can
 be detacted from your terminal (i.e., you can logout, close the window, etc.),
-and then restore the session when you log back in. For {\tt screen}, commands
-are entered by first typing {\tt \carat-a}, where ``{\tt \carat}'' is the
-control key.
+and then restore the session when you log back in. For \cmd{screen}, commands
+are entered by first typing \cmd{^-a}, where \cmd{^} is the control key.
 
 \section{Advanced ssh tricks}
 
