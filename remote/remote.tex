@@ -1,32 +1,104 @@
 %-----------------------------------------------------------------------------
-\section{Keeping it going...}
+\section{Fundamentals}
 
-\subsection{I want to start a job up on a remote computer and make sure it keeps running
-  even if I am disconnected}
+Definitions: The \emph{local} computer is the one you are working on and from
+which you connect. The \emph{remote} computer is the one you connect to, over a
+network.
 
-{\tt nohup} is your friend here.  If you start you job with {\tt
-  nohup}, then even if you close the terminal window, kill your {\tt
-  ssh} session, etc., it will keep running.  Note that you should redirect
-the output (including {\tt stderr})
+\subsection{I want to connect to a remote computer}
+
+You will use the {\tt ssh} program (``secure shell'') to connect to a remote
+computer. The most straightforward way is to run the command
+
+\begin{verbatim}
+ssh username@address.of.remote.computer
+\end{verbatim}
+
+The program will then ask for your remote password and open a shell on the
+remote computer. The address could be a hostname such as {\tt
+server.youruniversity.edu}, or it could be an IP address such as 198.192.10.1.
+You can leave out the username if the remote username is the same as the local
+username.
+
+\subsection{I want make it easier to connect to a remote computer that I use a
+lot}
+
+Typing the whole {\tt ssh} command with the address and username every time is
+tedious. There is a very simple way to expedite this.
+
+In your home directory there will be a directory called {\tt .ssh}. This
+directory may contains a file called {\tt config}, which can be used among
+other things to set up shorter aliases to connections you use a lot. If this
+file does not exist, you can create it.
+
+Let's say your username is {\tt galileo} and you need to connect to a remote
+machine called {\tt lab.galilei.edu}. You can put the following in your
+{\tt .ssh/config} file:
+
+\begin{verbatim}
+Host lab
+    HostName lab.galilei.edu
+    User galileo
+\end{verbatim}
+
+On the first line {\tt lab} is an alias, which you can choose yourself. With
+this setup done, typing {\tt ssh lab} is equivalent to typing {\tt ssh
+galileo@lab.galilei.edu}.
+
+\subsection{I want to transfer a file to/from a remote computer}
+
+The command to do this is {\tt scp}, short for ``secure copy''. It works very
+much like regular {\tt cp}, except you can add an identifier for a remote
+computer to the file paths, separated by a colon. This identifier can either be
+a full {\tt username@address} specification or an alias defined in {\tt
+.ssh/config}. With the above definitions, these two commands both copy the file
+{\tt test.txt} from the home directory on the remote computer to the working
+directory on the local:
+
+\begin{verbatim}
+scp galileo@lab.galilei.edu:test.txt .
+scp lab:test.txt .
+\end{verbatim}
+
+\section{SSH keys}
+
+\subsection{I want to stop {\tt ssh} asking for my password every time}
+
+
+\section{Keeping jobs going}
+
+\subsection{I want to start a job up on a remote computer and make sure it
+keeps running even if I am disconnected}
+
+{\tt nohup} is your friend here. If you start you job with {\tt nohup}, then
+even if you close the terminal window, kill your {\tt ssh} session, etc., it
+will keep running. Note that you should redirect the output (including {\tt
+stderr})
 
 \begin{verbatim}
 nohup myjob &> out &
 \end{verbatim}
 
-For some commands, especially those run with MPI, you also want to redirect input,
-such as:
+For some commands, especially those run with MPI, you also want to redirect
+input, such as:
+
 \begin{verbatim}
 nohup mpiexec -n 4 ./myjob &> out < /dev/null &
 \end{verbatim}
 
+\subsection{I want to be able to reconnect to a job that was running in a
+terminal that got disconnected}
 
-
-\subsection{I want to be able to reconnect to a job that was running in
-  a terminal that got disconnected}
-
-GNU screen is the solution---this sets up a special terminal session that
-can be detacted from your terminal (i.e., you can logout, close the window, etc.),
-and then restore the session when you log back in.  For {\tt screen},
-commands are entered by first typing {\tt \carat-a}, where ``{\tt \carat}'' is the
+GNU screen is the solution---this sets up a special terminal session that can
+be detacted from your terminal (i.e., you can logout, close the window, etc.),
+and then restore the session when you log back in. For {\tt screen}, commands
+are entered by first typing {\tt \carat-a}, where ``{\tt \carat}'' is the
 control key.
 
+\section{Advanced ssh tricks}
+
+\subsection{I want to get an ssh connection through a gateway server into a
+private network (ssh tunnels)}
+
+\subsection{I want to mount a remote directory onto the local filesystem over
+ssh}
