@@ -27,8 +27,8 @@ Typing the whole \cmd{ssh} command with the address and username every time is
 tedious. There is a very simple way to expedite this.
 
 In your home directory there will be a directory called \cmd{.ssh}. This
-directory may contains a file called \cmd{config}, which can be used among
-other things to set up shorter aliases to connections you use a lot. If this
+directory may contain a file called \cmd{config}, which can be used (among
+other things) to set up shorter aliases for connections you use a lot. If this
 file does not exist, you can create it.
 
 Let's say your username is \cmd{galileo} and you need to connect to a remote
@@ -51,18 +51,27 @@ The command to do this is \cmd{scp}, short for ``secure copy''. It works very
 much like regular \cmd{cp}, except you can add an identifier for a remote
 computer to the file paths, separated by a colon. This identifier can either be
 a full \cmd{username@address} specification or an alias defined in
-\cmd{.ssh/config}. With the above definitions, these two commands both copy the
-file \cmd{test.txt} from the home directory on the remote computer to the
-working directory on the local:
+\cmd{.ssh/config}. Like \cmd{ssh}, \cmd{scp} will ask for your remote password.
+With the above definitions, these two commands both copy the file
+\cmd{test.txt} from the home directory on the remote computer to the local
+working directory:
 
 \begin{lstlisting}
 scp galileo@lab.galilei.edu:test.txt .
 scp lab:test.txt .
 \end{lstlisting}
 
+Copying a local file to the remote works in a similar way. To copy
+\cmd{example.png} from the local working directory to the \cmd{\~/public_html}
+directory on the remote, you can write
+
+\begin{lstlisting}
+scp example.png lab:public_html/
+\end{lstlisting}
+
 \section{SSH keys}
 
-\subsection{I want to stop \cmd{ssh} asking for my password every time}
+\subsection{I want to stop \cmd{ssh} asking for my password all the time}
 
 
 \section{Keeping jobs going}
