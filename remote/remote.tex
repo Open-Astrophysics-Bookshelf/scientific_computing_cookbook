@@ -1,32 +1,229 @@
 %-----------------------------------------------------------------------------
-\section{Keeping it going...}
+\section{Fundamentals}
 
-\subsection{I want to start a job up on a remote computer and make sure it keeps running
-  even if I am disconnected}
+Definitions: The \emph{local} computer is the one you are working on and from
+which you connect. The \emph{remote} computer is the one you connect to, over a
+network.
 
-{\tt nohup} is your friend here.  If you start you job with {\tt
-  nohup}, then even if you close the terminal window, kill your {\tt
-  ssh} session, etc., it will keep running.  Note that you should redirect
-the output (including {\tt stderr})
+\subsection{I want to connect to a remote computer}
 
-\begin{verbatim}
+You will use the \lstinline{ssh} program (``secure shell'') to connect to a
+remote computer. The most straightforward way is to run the command
+
+\begin{lstlisting}
+ssh username@address.of.remote.computer
+\end{lstlisting}
+
+The program will then ask for your remote password and open a shell on the
+remote computer. The address could be a hostname such as
+\cmd{server.youruniversity.edu}, or it could be an IP address such as
+198.192.10.1. You can leave out the username if the remote username is the same
+as the local username.
+
+\subsection{I want make it easier to connect to a remote computer that I use a
+lot}
+
+Typing the whole \cmd{ssh} command with the address and username every time is
+tedious. There is a very simple way to expedite this.
+
+In your home directory there will be a directory called \cmd{.ssh}. This
+directory may contain a file called \cmd{config}, which can be used (among
+other things) to set up shorter aliases for connections you use a lot. If this
+file does not exist, you can create it.
+
+Let's say your username is \cmd{galileo} and you need to connect to a remote
+machine called \cmd{lab.galilei.edu}. You can put the following in your
+\cmd{.ssh/config} file:
+
+\begin{lstlisting}
+Host lab
+    HostName lab.galilei.edu
+    User galileo
+\end{lstlisting}
+
+On the first line \cmd{lab} is an alias, which you can choose yourself. With
+this setup done, typing \cmd{ssh lab} is equivalent to typing \cmd{ssh
+galileo@lab.galilei.edu}.
+
+\subsection{I want to transfer a file to or from a remote computer}
+
+The command to do this is \cmd{scp}, short for ``secure copy''. It works very
+much like regular \cmd{cp}, except you can add an identifier for a remote
+computer to the file paths, separated by a colon. This identifier can either be
+a full \cmd{username@address} specification or an alias defined in
+\cmd{.ssh/config}. Like \cmd{ssh}, \cmd{scp} will ask for your remote password.
+With the above definitions, these two commands both copy the file
+\cmd{test.txt} from the home directory on the remote computer to the local
+working directory:
+
+\begin{lstlisting}
+scp galileo@lab.galilei.edu:test.txt .
+scp lab:test.txt .
+\end{lstlisting}
+
+Copying a local file to the remote works in a similar way. To copy
+\cmd{example.png} from the local working directory to the \cmd{\~/public_html}
+directory on the remote, you can write
+
+\begin{lstlisting}
+scp example.png lab:public_html/
+\end{lstlisting}
+
+\section{SSH keys}
+
+\subsection{I want to stop \cmd{ssh} asking for my password all the time}
+
+Passwords are one way to establish that a user who requests an SSH connection
+really has the right to log in. But they are not the only way. The smooth way
+to use SSH is to \emph{exchange keys}, which proves to the remote machine that
+the user requesting access is your user account on your local machine.
+
+In a way you extend your authentication on your local machine to your remote
+machine by giving your local user account automatic access to the remote. This
+is very useful for connections you use a lot, especially when copying files
+with \cmd{scp}. It's also absolutely necessary if you want to use \cmd{sshfs}
+(see below).
+
+In public-key cryptography you generate a pair of two keys. The \emph{public
+key} can only encrypt text, which only the corresponding \emph{private key} can
+decrypt. To communicate, two people can share public keys with each other over
+an unsafe channel. Then they can send each other encrypted messages that only
+the receiver can decrypt. Anyone who is eavesdropping only gets the public
+keys, so cannot decrypt any messages.
+
+If you have a public key from a person you know, you can use it to confirm
+their identity e.g. by encrypting a message that only you know, and asking them
+send it back to you.
+
+\subsubsection{Generating a key pair}
+
+To generate a key pair for SSH, run the command \cmd{ssh-keygen}. This will ask
+some questions, but you can press enter to give the default value to all of
+them\footnote{Note that you can set a passphrase for the keys, but then ssh
+will ask for this passphrase every time you use the key, which is what we want
+to avoid here.}.
+
+The public key will be in \cmd{.ssh/id_rsa.pub}. This is what you give to the
+remote server to establish your identity. The contents of this file start with
+``\cmd{ssh-rsa}'', then have a long string of random characters, and finally
+somthing like the hostname of your local computer.
+
+\subsubsection{Setting up the identification on the remote}
+
+Log into the remote server using your password. Then edit (or create) a file in
+your home directory on the remote server, called \cmd{.ssh/authorized_keys}.
+Copy the contents of \cmd{id_rsa.pub} into this file. Be sure to copy the
+entire line and keep it on line in the file. The \cmd{authorized_keys} file can
+contain many keys, each on its own line.
+
+Now, the next time you open an SSH connection to that remote, it should log you
+in directly without asking for the password.
+
+\subsubsection{An easier way to copy the key}
+
+Many computers these days have a program called \cmd{ssh-copy-id} installed. In
+this case, after generating your key pair with \cmd{ssh-keygen}, you can run
+\cmd{ssh-copy-id <remote's address>}, and it will ask for your password and
+copy the key automatically to the remote's \cmd{authorized_keys} file.
+
+
+\section{Keeping jobs going}
+
+\subsection{I want to start a job up on a remote computer and make sure it
+keeps running even if I am disconnected}
+
+\cmd{nohup} is your friend here. If you start you job with \cmd{nohup}, then
+even if you close the terminal window, kill your \cmd{ssh} session, etc., it
+will keep running. Note that you should redirect the output (including
+\cmd{stderr})
+
+\begin{lstlisting}
 nohup myjob &> out &
-\end{verbatim}
+\end{lstlisting}
 
-For some commands, especially those run with MPI, you also want to redirect input,
-such as:
-\begin{verbatim}
+For some commands, especially those run with MPI, you also want to redirect
+input, such as:
+
+\begin{lstlisting}
 nohup mpiexec -n 4 ./myjob &> out < /dev/null &
-\end{verbatim}
+\end{lstlisting}
 
+\subsection{I want to be able to reconnect to a job that was running in a
+terminal that got disconnected}
 
+GNU screen is the solution---this sets up a special terminal session that can
+be detacted from your terminal (i.e., you can logout, close the window, etc.),
+and then restore the session when you log back in. For \cmd{screen}, commands
+are entered by first typing \cmd{^-a}, where \cmd{^} is the control key.
 
-\subsection{I want to be able to reconnect to a job that was running in
-  a terminal that got disconnected}
+\section{Advanced SSH tricks}
 
-GNU screen is the solution---this sets up a special terminal session that
-can be detacted from your terminal (i.e., you can logout, close the window, etc.),
-and then restore the session when you log back in.  For {\tt screen},
-commands are entered by first typing {\tt \carat-a}, where ``{\tt \carat}'' is the
-control key.
+\subsection{I want to get an SSH connection through a gateway server into a
+private network (SSH tunnels)}
+
+For security reasons, many institutions have an internal network, and computers
+which are only accessible from within that network. Sometimes they also have
+gateway servers, which provide an interface between the Internet and the
+internal network. SSH tunnels provide a way to set up connections directly from
+your computer to computers on the internal network transparently. Needless to
+say, you need to have access credentials to both the gateway and the internal
+computer.
+
+Let's say your gateway server's address is \cmd{gateway.galilei.edu}, and the
+internal server inside the network is \cmd{bunker.galilei.edu}. Your username
+on both computers is \cmd{galileo}. The easiest way to set up SSH tunneling is
+to put something like the following in \cmd{.ssh/config}:
+
+\begin{lstlisting}
+Host bunker-tunnel
+    Hostname gateway.galilei.edu
+    LocalForward 33001 bunker.galilei.edu:22
+    User galileo
+Host bunker
+    Hostname localhost
+    Port 33001
+    User galileo
+\end{lstlisting}
+
+The first Host definition sets up \cmd{bunker-tunnel} so that it creates a
+tunnel from port 33001 on your local computer, to port 22 on
+\cmd{bunker.galilei.edu}, \emph{through} the gateway server. Port 22 is the
+port used for SSH connections by default. The way you should read this
+definition is ``Make a connection to the gateway server, and there make a
+tunnel that goes from the local computer to the internal server''.
+
+\cmd{localhost} always points to the local computer, so the second Host
+definition sets up a connection to port 33001 on the local computer. The trick
+is that when the tunnel connection is open, this port is one end of the tunnel
+which leads to port 22 on \cmd{bunker.galilei.edu} instead.
+
+To use the tunnel, first open the \cmd{bunker-tunnel} connection. This
+establishes the tunnel, and the \cmd{bunker} connection works. The \cmd{-N}
+option to the \cmd{ssh} command stops it from opening a shell on the gateway
+server. Instead it only sets up the tunnel.
+
+\begin{lstlisting}
+ssh -N bunker-tunnel &
+ssh bunker
+\end{lstlisting}
+
+All the commands we describe in this chapter (\cmd{ssh}, \cmd{scp} and
+\cmd{sshfs}) work with the \cmd{bunker} alias normally, as long as the tunnel
+remains open.
+
+After finishing your work on \cmd{bunker} and closing the second SSH session,
+run \cmd{fg} to bring the tunnel SSH session to foreground, and close it with
+\cmd{ctrl-c}.
+
+The port number 33001 we chose above is arbitrary, but it's a good idea to avoid
+using a port number that's used by other programs. The 33000 range is a good
+choice of numbers.
+
+\subsection{I want to mount a remote directory onto the local filesystem over
+SSH}
+
+Copying files around with \cmd{scp} is all fine, but what if you could remotely
+mount a directory on a remote computer so that for all intents and purposes it
+behaves like a directory on your local computer, except all the data transfer
+happens over SSH? The answer to this is \cmd{sshfs}.
 
